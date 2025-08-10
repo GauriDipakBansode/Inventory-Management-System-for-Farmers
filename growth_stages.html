@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Growth Stages</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f2f5;
+    }
+
+    header {
+      background-color: #4CAF50;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 30px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      background-color: #f9f9f9;
+      margin: 10px 0;
+      padding: 16px 20px;
+      border-radius: 10px;
+      font-size: 18px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 30px;
+      font-size: 16px;
+      text-decoration: none;
+      color: #4CAF50;
+      font-weight: bold;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+
+  <script>
+    async function loadStages() {
+      const res = await fetch('/growth-stages');
+      const stages = await res.json();
+      const list = document.getElementById('stageList');
+      list.innerHTML = '';
+
+      stages.forEach(stage => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <strong>${stage.name}</strong><br>
+          <strong>Disease:</strong> ${stage.disease}<br>
+          <strong>Chemical:</strong> ${stage.chemical}
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    window.onload = loadStages;
+  </script>
+</head>
+<body>
+  <header>Growth Stages</header>
+  <div class="container">
+    <h2>List of Growth Stages</h2>
+    <ul id="stageList"></ul>
+    <a href="dashboard.html" class="back-link">← Back to Dashboard</a>
+  </div>
+</body>
+</html>

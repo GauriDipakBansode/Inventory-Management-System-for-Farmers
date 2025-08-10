@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Dependents</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f2f5;
+    }
+
+    header {
+      background-color: #4CAF50;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 30px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    select, input[type="text"] {
+      padding: 10px;
+      font-size: 16px;
+      width: 80%;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .section {
+      background-color: #f9f9f9;
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 30px;
+      font-size: 16px;
+      text-decoration: none;
+      color: #4CAF50;
+      font-weight: bold;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+
+  <script>
+    async function loadWorkersAndDependents() {
+      const workerRes = await fetch('/get-workers');
+      const workers = await workerRes.json();
+
+      const list = document.getElementById('dependentsList');
+      list.innerHTML = '';
+
+      for (let worker of workers) {
+        const res = await fetch(`/get-dependents/${worker.id}`);
+        const dependents = await res.json();
+
+        const section = document.createElement('div');
+        section.classList.add('section');
+        section.innerHTML = `<h4>${worker.name}</h4>`;
+        dependents.forEach(dep => {
+          section.innerHTML += `- ${dep.name} (${dep.relation})<br>`;
+        });
+
+        list.appendChild(section);
+      }
+
+      const workerSelect = document.getElementById('workerSelect');
+      workerSelect.innerHTML = `<option value="">--Select Worker--</option>`;
+      workers.forEach(w => {
+        workerSelect.innerHTML += `<option value="${w.id}">${w.name}</option>`;
+      });
+    }
+
+    async function addDependent() {
+      const worker_id = document.getElementById('workerSelect').value;
+      const name = document.getElementById('dependentName').value.trim();
+      const relation = document.getElementById('relation').value.trim();
+
+      if (!worker_id || !name || !relation) return alert("Fill all fields");
+
+      await fetch('/add-dependent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ worker_id, name, relation })
+      });
+
+      document.getElementById('dependentName').value = '';
+      document.getElementById('relation').value = '';
+      loadWorkersAndDependents();
+    }
+
+    window.onload = loadWorkersAndDependents;
+  </script>
+</head>
+<body>
+  <header>Manage Dependents</header>
+  <div class="container">
+    <h2>Add New Dependent</h2>
+    <div class="form-group">
+      <select id="workerSelect"></select><br>
+      <input type="text" id="dependentName" placeholder="Dependent Name"><br>
+      <input type="text" id="relation" placeholder="Relation"><br>
+      <button onclick="addDependent()">Add Dependent</button>
+    </div>
+    <div id="dependentsList"></div>
+    <a href="dashboard.html" class="back-link">← Back to Dashboard</a>
+  </div>
+</body>
+</html>

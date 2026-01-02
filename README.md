@@ -200,10 +200,6 @@ You can then reference these files inside this README using relative paths.
 * Integration with external agricultural APIs
 * Advanced analytics and reporting
 
----
 
-## Author
-
-Gauri
 
 

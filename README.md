@@ -161,7 +161,7 @@ The following ER diagram represents the database structure of the Farmventory sy
 ### Crops Management
 ![Crops Management](docs/screenshots/crops-page.png)
 
-### Stock Inventory
+### worker Inventory
 ![Stock Inventory](docs/screenshots/worker-page.png)
 
 ### Suggested Structure
